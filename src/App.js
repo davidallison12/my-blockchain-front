@@ -20,9 +20,14 @@ export default function App() {
         I am david and I am a blockchain enthusiast. Connect your Ethereum wallet and let me know your ride or die Pokemon team!
         </div>
 
+<div>
+<input type="text" id="pokename" name="pokename" required
+       size="50"/>
+
         <button className="waveButton" onClick={wave}>
           Wave at Me
         </button>
+</div>
       </div>
     </div>
   );
