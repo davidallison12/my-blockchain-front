@@ -31,7 +31,16 @@ body {
 
 .waveButton {
   cursor: pointer;
-  margin-top: 16px;
+  margin-top: 4px;
+  padding: 8px;
+  border: 0;
+  border-radius: 3px;
+  
+}
+
+.connectButton {
+  cursor: pointer;
+  margin-top: 30px;
   padding: 8px;
   border: 0;
   border-radius: 3px;
@@ -46,4 +55,10 @@ body {
 input { 
   line-height: 2em;
   border-radius:5px
+}
+
+.inputContainer {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10vh ;
 }
