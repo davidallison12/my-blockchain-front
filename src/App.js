@@ -1,10 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import "./App.css";
+import { getContractAddress } from "ethers/lib/utils";
+import abi from "./utils/PokePortal.json";
+import { utils } from "hash.js";
 
 export default function App() {
   // Adding state variable to store user's public wallet
   const [currentAccount, setCurrentAccount] = useState("");
+
+  // Create a variable that holds the contract addresss of deployment
+  const contractAddress = "0xA94AA3d7400a071718C87e5bE477c1750EA13B8D";
+
+  // Create variable that refs abi content
+  const contractABI = abi.abi;
 
   const checkIfWalletIsConnected = async () => {
     try {
@@ -36,27 +45,48 @@ export default function App() {
   // Implement your connect Wallet method
   const connectWallet = async () => {
     try {
-      const {ethereum} = window
+      const { ethereum } = window;
 
-      if(!ethereum) {
-        alert("Get MetaMask!")
-        return
+      if (!ethereum) {
+        alert("Get MetaMask!");
+        return;
       }
-      const accounts = await ethereum.request({ method: "eth_requestAccounts" })
-      console.log("Connected", accounts[0])
-
+      const accounts = await ethereum.request({
+        method: "eth_requestAccounts",
+      });
+      console.log("Connected", accounts[0]);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
+  const wave = async () => {
+    try {
+      const { ethereum } = window;
+
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const pokePortalContract = new ethers.Contract(
+          contractAddress,
+          contractABI,
+          signer
+        );
+
+        let count = await pokePortalContract.getTotalPokeTeams();
+        console.log("Retrieved total wave count ...", count.toNumber());
+      } else {
+        console.log("Ethereum object doesn't exist!");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   // Runs our function when the page loads
   useEffect(() => {
     checkIfWalletIsConnected();
   }, []);
-
-  const wave = () => {};
 
   return (
     <div className="mainContainer">
