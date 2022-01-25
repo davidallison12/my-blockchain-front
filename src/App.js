@@ -75,6 +75,18 @@ export default function App() {
 
         let count = await pokePortalContract.getTotalPokeTeams();
         console.log("Retrieved total wave count ...", count.toNumber());
+
+        // Execute the actual "Wave" from your smart contract
+        const pokeTxn = await pokePortalContract.newPokeTeam();
+        console.log("Mining...", pokeTxn.hash);
+
+        await pokeTxn.wait();
+        console.log("Mined --", pokeTxn.hash);
+
+        console.log("Retrieved total wave count...", count.toNumber());
+
+        count = await pokePortalContract.getTotalPokeTeams();
+        console.log("Retrieved total wave count ...", count.toNumber());
       } else {
         console.log("Ethereum object doesn't exist!");
       }
