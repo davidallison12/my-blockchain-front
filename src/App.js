@@ -10,7 +10,7 @@ export default function App() {
   const [currentAccount, setCurrentAccount] = useState("");
 
   // Create a variable that holds the contract addresss of deployment
-  const contractAddress = "0xA94AA3d7400a071718C87e5bE477c1750EA13B8D";
+  const contractAddress = "0xCdA21C981DCd33e83de305E29a91097D42eE3EA0";
 
   // Create variable that refs abi content
   const contractABI = abi.abi;
