@@ -1,20 +1,62 @@
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import "./App.css";
-import { getContractAddress } from "ethers/lib/utils";
 import abi from "./utils/PokePortal.json";
-import { utils } from "hash.js";
+
 
 export default function App() {
   // Adding state variable to store user's public wallet
   const [currentAccount, setCurrentAccount] = useState("");
-
+  // All state property to store pokejoins
+  const [allPokeTeams, setAllPokeTeams] = useState([])
+  // Set state for message prompt
+  const [message, setMessage] = useState("")
   // Create a variable that holds the contract addresss of deployment
   const contractAddress = "0xCdA21C981DCd33e83de305E29a91097D42eE3EA0";
 
   // Create variable that refs abi content
   const contractABI = abi.abi;
 
+
+
+  // ============================
+  //  GETTING ALL POKEMON TEAMS
+  // ============================
+    const getAllPokeTeams = async () => {
+      try {
+        const { ethereum } = window
+        if (ethereum) {
+          const provider = new ethers.providers.Web3Provider(ethereum)
+          const signer = provider.getSigner()
+          const pokePortalContract = new ethers.Contract(contractAddress, contractABI, signer)
+  
+          // Call the getAllPokeTeams from my contract 
+          const pokeTeams = await pokePortalContract.getAllPokeTeams()
+  
+          // We only need address, timestamp and message in our UI so lets pick those out 
+  
+          let pokeTeamsCleaned = []
+          pokeTeams.forEach( pokeTeam => {
+            pokeTeamsCleaned.push({
+              trainer: pokeTeam.trainer,
+              timestamp: new Date(pokeTeam.timestamp * 1000),
+              message: pokeTeam.message
+            })
+          })
+          setAllPokeTeams(pokeTeamsCleaned)
+  
+        } else {
+          console.log("Ethereum object doesn't exist!")
+        }
+      } catch (error) {
+  
+      }
+    }
+  // ==================================
+  // WALLET CONNECTION
+  // ==================================
+
+  
   const checkIfWalletIsConnected = async () => {
     try {
       // First make sure we have access to window.ethereum
@@ -34,6 +76,8 @@ export default function App() {
         const account = accounts[0];
         console.log("Found an authorized account:", account);
         setCurrentAccount(account);
+        getAllPokeTeams()
+
       } else {
         console.log("No authorized account found");
       }
@@ -60,6 +104,12 @@ export default function App() {
     }
   };
 
+  // ==================================
+  //  GETTING AND SENDING YOUR POKETEAM
+  // ==================================
+
+
+  
   const wave = async () => {
     try {
       const { ethereum } = window;
@@ -77,7 +127,7 @@ export default function App() {
         console.log("Retrieved total wave count ...", count.toNumber());
 
         // Execute the actual "Wave" from your smart contract
-        const pokeTxn = await pokePortalContract.newPokeTeam();
+        const pokeTxn = await pokePortalContract.newPokeTeam(message);
         console.log("Mining...", pokeTxn.hash);
 
         await pokeTxn.wait();
@@ -119,7 +169,7 @@ export default function App() {
         </div>
 
         <div className="inputContainer">
-          <input type="text" id="pokename" name="pokename" required size="50" />
+          <input type="text" id="pokename" name="pokename" required size="50" onChange={(e) => setMessage(e.target.value)} />
 
           <button className="waveButton" onClick={wave}>
             Wave at Me
@@ -132,6 +182,16 @@ export default function App() {
             Connect Wallet
           </button>
         )}
+
+        {allPokeTeams.map((pokeTeam, index) => {
+          return(
+            <div key={index} style={{ backgroundColor: "OldLace", marginTop: "16px", padding: "8px" }}>
+              <div>Address: {pokeTeam.trainer}</div>
+              <div>Time: {pokeTeam.timestamp.toString()}</div>
+              <div>Pokemon: {pokeTeam.message}</div>
+              </div>
+          )
+        })}
       </div>
     </div>
   );
