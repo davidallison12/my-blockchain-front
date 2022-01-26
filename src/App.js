@@ -8,7 +8,7 @@ export default function App() {
   // Adding state variable to store user's public wallet
   const [currentAccount, setCurrentAccount] = useState("");
   // All state property to store pokejoins
-  const [allPokeTeams, setAllPokeTeams] = useState([])
+  const [everyPokemon, setEveryPokemon] = useState([])
   // Set state for message prompt
   const [message, setMessage] = useState("")
   // Create a variable that holds the contract addresss of deployment
@@ -22,7 +22,7 @@ export default function App() {
   // ============================
   //  GETTING ALL POKEMON TEAMS
   // ============================
-    const getAllPokeTeams = async () => {
+    const getAllPokemon = async () => {
       try {
         const { ethereum } = window
         if (ethereum) {
@@ -31,19 +31,19 @@ export default function App() {
           const pokePortalContract = new ethers.Contract(contractAddress, contractABI, signer)
   
           // Call the getAllPokeTeams from my contract 
-          const pokeTeams = await pokePortalContract.getAllPokeTeams()
+          const allPokemon = await pokePortalContract.getAllPokeTeams()
   
           // We only need address, timestamp and message in our UI so lets pick those out 
   
-          let pokeTeamsCleaned = []
-          pokeTeams.forEach( pokeTeam => {
-            pokeTeamsCleaned.push({
-              trainer: pokeTeam.trainer,
-              timestamp: new Date(pokeTeam.timestamp * 1000),
-              message: pokeTeam.message
+          let allPokemonCleaned = []
+          allPokemon.forEach( pokemon => {
+            allPokemonCleaned.push({
+              trainer: pokemon.trainer,
+              timestamp: new Date(pokemon.timestamp * 1000),
+              message: pokemon.message
             })
           })
-          setAllPokeTeams(pokeTeamsCleaned)
+          setEveryPokemon(allPokemonCleaned)
   
         } else {
           console.log("Ethereum object doesn't exist!")
@@ -76,7 +76,7 @@ export default function App() {
         const account = accounts[0];
         console.log("Found an authorized account:", account);
         setCurrentAccount(account);
-        getAllPokeTeams()
+        getAllPokemon()
 
       } else {
         console.log("No authorized account found");
@@ -110,7 +110,7 @@ export default function App() {
 
 
   
-  const wave = async () => {
+  const declarePokemon = async () => {
     try {
       const { ethereum } = window;
 
@@ -157,7 +157,7 @@ export default function App() {
           👋🏾 Hey there! Welcome to PokePortal{" "}
           <img
             className="emojidex-emoji"
-            src="https://cdn.emojidex.com/emoji/seal/Pokeball.png"
+            src="https://purepng.com/public/uploads/large/purepng.com-pokeballpokeballdevicepokemon-ballpokemon-capture-ball-1701527825891sbtn8.png"
             emoji-code="Pokeball"
             alt="Pokeball"
           />
@@ -165,14 +165,14 @@ export default function App() {
 
         <div className="bio">
           I am david and I am a blockchain enthusiast. Connect your Ethereum
-          wallet and let me know your ride or die Pokemon team!
+          wallet and let me know your ride or die Pokemon companion!
         </div>
 
         <div className="inputContainer">
           <input type="text" id="pokename" name="pokename" required size="50" onChange={(e) => setMessage(e.target.value)} />
 
-          <button className="waveButton" onClick={wave}>
-            Wave at Me
+          <button className="waveButton" onClick={declarePokemon}>
+            Declare Your Pokemon
           </button>
         </div>
 
@@ -183,12 +183,12 @@ export default function App() {
           </button>
         )}
 
-        {allPokeTeams.map((pokeTeam, index) => {
+        {everyPokemon.map((pokemon, index) => {
           return(
-            <div key={index} style={{ backgroundColor: "OldLace", marginTop: "16px", padding: "8px" }}>
-              <div>Address: {pokeTeam.trainer}</div>
-              <div>Time: {pokeTeam.timestamp.toString()}</div>
-              <div>Pokemon: {pokeTeam.message}</div>
+            <div  className="pokemon-list-item"key={index}>
+              <div>Address: {pokemon.trainer}</div>
+              <div>Time: {pokemon.timestamp.toString()}</div>
+              <div>Pokemon: {pokemon.message}</div>
               </div>
           )
         })}

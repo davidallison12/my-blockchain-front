@@ -62,3 +62,12 @@ input {
   flex-direction: column;
   margin-top: 10vh ;
 }
+
+.pokemon-list-item {
+  color: white;  
+  backdrop-filter: blur(10px);
+  background: rgba(0,0,0,0.6);
+  margin-top: 16px;
+  padding: 8px;
+  border:solid white 1px
+}
