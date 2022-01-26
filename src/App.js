@@ -185,7 +185,7 @@ export default function App() {
 
         {everyPokemon.map((pokemon, index) => {
           return(
-            <div  className="pokemon-list-item"key={index}>
+            <div  className="pokemon-list-item" key={index}>
               <div>Address: {pokemon.trainer}</div>
               <div>Time: {pokemon.timestamp.toString()}</div>
               <div>Pokemon: {pokemon.message}</div>
