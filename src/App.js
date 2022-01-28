@@ -12,7 +12,7 @@ export default function App() {
   // Set state for message prompt
   const [message, setMessage] = useState("")
   // Create a variable that holds the contract addresss of deployment
-  const contractAddress = "0xCdA21C981DCd33e83de305E29a91097D42eE3EA0";
+  const contractAddress = "0x7D50F50903A991b5ceb8D71D4e7fFc89A97a61f2";
 
   // Create variable that refs abi content
   const contractABI = abi.abi;
@@ -57,34 +57,34 @@ export default function App() {
   // ==================================
 
   
-  const checkIfWalletIsConnected = async () => {
-    try {
-      // First make sure we have access to window.ethereum
+  // const checkIfWalletIsConnected = async () => {
+  //   try {
+  //     // First make sure we have access to window.ethereum
 
-      const { ethereum } = window; // Equivalent to "window.ethereum"
+  //     const { ethereum } = window; // Equivalent to "window.ethereum"
 
-      if (!ethereum) {
-        console.log("Make sure you have metamask!");
-      } else {
-        console.log("We have the ethereum object", ethereum);
-      }
-      // Check if we're authorized to access user's wallet
+  //     if (!ethereum) {
+  //       console.log("Make sure you have metamask!");
+  //     } else {
+  //       console.log("We have the ethereum object", ethereum);
+  //     }
+  //     // Check if we're authorized to access user's wallet
 
-      const accounts = await ethereum.request({ method: "eth_accounts" });
+  //     const accounts = await ethereum.request({ method: "eth_accounts" });
 
-      if (accounts.length !== 0) {
-        const account = accounts[0];
-        console.log("Found an authorized account:", account);
-        setCurrentAccount(account);
-        getAllPokemon()
+  //     if (accounts.length !== 0) {
+  //       const account = accounts[0];
+  //       console.log("Found an authorized account:", account);
+  //       setCurrentAccount(account);
+  //       getAllPokemon()
 
-      } else {
-        console.log("No authorized account found");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  //     } else {
+  //       console.log("No authorized account found");
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   // Implement your connect Wallet method
   const connectWallet = async () => {
@@ -137,6 +137,8 @@ export default function App() {
 
         count = await pokePortalContract.getTotalPokeTeams();
         console.log("Retrieved total wave count ...", count.toNumber());
+        setMessage("")
+        getAllPokemon()
       } else {
         console.log("Ethereum object doesn't exist!");
       }
@@ -147,14 +149,44 @@ export default function App() {
 
   // Runs our function when the page loads
   useEffect(() => {
+    const checkIfWalletIsConnected = async () => {
+      try {
+        // First make sure we have access to window.ethereum
+  
+        const { ethereum } = window; // Equivalent to "window.ethereum"
+  
+        if (!ethereum) {
+          console.log("Make sure you have metamask!");
+        } else {
+          console.log("We have the ethereum object", ethereum);
+        }
+        // Check if we're authorized to access user's wallet
+  
+        const accounts = await ethereum.request({ method: "eth_accounts" });
+  
+        if (accounts.length !== 0) {
+          const account = accounts[0];
+          console.log("Found an authorized account:", account);
+          setCurrentAccount(account);
+          getAllPokemon()
+  
+        } else {
+          console.log("No authorized account found");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
     checkIfWalletIsConnected();
+
   }, []);
 
   return (
     <div className="mainContainer">
       <div className="dataContainer">
         <div className="header">
-          👋🏾 Hey there! Welcome to PokePortal{" "}
+          <span role="img" aria-label="Hand waving emoji">👋🏾</span> Hey there! Welcome to PokePortal{" "}
           <img
             className="emojidex-emoji"
             src="https://purepng.com/public/uploads/large/purepng.com-pokeballpokeballdevicepokemon-ballpokemon-capture-ball-1701527825891sbtn8.png"
@@ -169,7 +201,7 @@ export default function App() {
         </div>
 
         <div className="inputContainer">
-          <input type="text" id="pokename" name="pokename" required size="50" onChange={(e) => setMessage(e.target.value)} />
+          <input type="text" id="pokename" name="pokename" value={message} required size="50" onChange={(e) => setMessage(e.target.value)} />
 
           <button className="waveButton" onClick={declarePokemon}>
             Declare Your Pokemon
